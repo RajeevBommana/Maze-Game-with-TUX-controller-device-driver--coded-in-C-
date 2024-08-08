@@ -1,0 +1,29 @@
+Checkpoint 1;
+bug 1: String to buffer conversion issue
+    My approach was to convert the given string into a 18 by 320 array and then using that 
+    output array in order to traverse it and add it into the buffer. The way it needs to be added
+    is that for each plane, the top element from each column of the plane needs to be added, then the second element from
+    each column and so on. However, I reversed the order of my 2 inner for loops (planes for loop was ok) so that each column of the
+    plane was added 1 by 1. This led to an incorrect image and I fixed it by switching the order of my 2 inner for loops.
+bug 2: character was blue due to incorrect mask_block function
+    For my mask block function, I used the draw_full_block given function and modified the last double for loop
+    in order to save the original maze block in memory and write a masked version of the passed in block to that memory.
+    I was supposed to use the mask in order to only write to that memory location when the mask is a 1. However I just ANDed the passed in image and the mask.
+    This made the character have the correct shape but since all the values were going to be either 1 or 0 the color changed. I instead changed it to only write to the memory location
+    if the mask value at the given point was 1 so it preserved the original color.
+bug 3: character kept going underneath the status bar
+    This bug is when the screen is technically too big so there is still more maze undernath the status bar so the character goes underneath. I was able to fix
+    it by accounting for the height of the status bar which is 18. I subtract the 18 from the height to make it 182 in order to make it work.
+
+Checkpoint 2;
+bug 1: using 255 for white instead of 0x3F
+    Initially, for the linear interpolation, I was using a value of 255 for white instead of 0x3F. This led to me having a blue shadow that would be
+    miscolored in some areas as well. The fix was to incorporate 0x3F as the value.
+bug 2: Trying to set a reference variable from kernel context
+    My button presses were not doing anything when I tested using input.c This is because I was trying to just change the value of the passed in arg since I thought it was 
+    passed in by reference so it would update. I forgot that kernel and user spaces do not have direct access to each other. I fixed it by copying my output value to user and using the arg
+    passed in as the memory address to copy to.
+bug 3: not setting bit shift
+    My clock was initially setting all 4 leds to the value of the 0th led. This is because I used an iterative approach where I & with 0xF to get the last 4 bits as a digit and bit shift
+    right by 4. However, I was doing value >> 4 which does not set value as the new bit shifted value. I needed to do value = value >> 4 to save the value as the next bit shift would shift it
+    another 4 bits.
